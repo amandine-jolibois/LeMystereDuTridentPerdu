@@ -19,6 +19,7 @@ background_image = pygame.transform.scale(background_image, (800, 600))
 # Police de texte
 font = pygame.font.Font(None, 36)
 
+
 class Button:
     def __init__(self, image_path, position, size, action):
         self.image = pygame.image.load(image_path)
@@ -31,7 +32,7 @@ class Button:
 
 
 def draw_menu(start_button, quit_button):
-    screen.blit(background_image, (0,0))
+    screen.blit(background_image, (0, 0))
 
     # Dessiner les boutons
     start_button.draw()
@@ -39,16 +40,17 @@ def draw_menu(start_button, quit_button):
 
     pygame.display.flip()
 
-def open_new_window():
 
+def open_new_window():
     main_page1()
     print("Ouverture d'une nouvelle fenêtre (Start)")
 
+
 def main_menu():
     pygame.display.set_caption("Menu Principal")
-    #pygame.display.set_icon("personnages\\Trident.png")
-    start_button = Button("Buttons\\PlayUp.png", (275, 250), (250, 120), action = open_new_window)
-    quit_button = Button("Buttons\\QuitUp.png", (275, 370), (250, 120), action = sys.exit)
+    # pygame.display.set_icon("fonds\\Tete-Trident.ico")
+    start_button = Button("Buttons\\PlayUp.png", (275, 250), (250, 120), action=open_new_window)
+    quit_button = Button("Buttons\\QuitUp.png", (275, 370), (250, 120), action=sys.exit)
 
     running = True
 
@@ -61,10 +63,13 @@ def main_menu():
             elif event.type == pygame.MOUSEMOTION:
                 if start_button.rect.collidepoint(event.pos):
                     start_button = Button("Buttons\\PlayDown.png", (275, 250), (250, 120), action = open_new_window)
+                elif quit_button.rect.collidepoint(event.pos):
+                    quit_button = Button("Buttons\\QuitDown.png", (275, 370), (250, 120), action=sys.exit)
                 else:
                     start_button = Button("Buttons\\PlayUp.png", (275, 250), (250, 120), action=open_new_window)
                     quit_button = Button("Buttons\\QuitUp.png", (275, 370), (250, 120), action=sys.exit)
-            elif event.type == pygame.MOUSEMOTION:
+
+            elif event.type == pygame.MOUSEBUTTONDOWN:
                 if start_button.rect.collidepoint(event.pos):
                     # Action pour le bouton "Start"
                     if start_button.action:
@@ -76,6 +81,7 @@ def main_menu():
                     running = False
 
         draw_menu(start_button, quit_button)
+
 
 # Exécution du menu principal
 main_menu()
