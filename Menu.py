@@ -1,9 +1,10 @@
 import pygame
 import sys
-from Page1 import main_page1
+from Nauffrage import main_Nauffrage
 
 # Initialisation de Pygame
 pygame.init()
+pygame.mixer.init()
 
 # Définition des couleurs
 BLACK = (0, 0, 0)
@@ -42,11 +43,14 @@ def draw_menu(start_button, quit_button):
 
 
 def open_new_window():
-    main_page1()
+    main_Nauffrage()
     print("Ouverture d'une nouvelle fenêtre (Start)")
 
 
 def main_menu():
+    pygame.mixer.music.load("Son\\Environnement\\Embiance.mp3")
+    pygame.mixer.music.play(-1)
+    pygame.mixer.music.set_volume(0.1)
     pygame.display.set_caption("Menu Principal")
     # pygame.display.set_icon("fonds\\Tete-Trident.ico")
     start_button = Button("Buttons\\PlayUp.png", (275, 250), (250, 120), action=open_new_window)
@@ -78,6 +82,7 @@ def main_menu():
                     # Action pour le bouton "Quit"
                     if quit_button.action:
                         quit_button.action()
+                        pygame.mixer.music.stop()
                     running = False
 
         draw_menu(start_button, quit_button)
@@ -85,3 +90,4 @@ def main_menu():
 
 # Exécution du menu principal
 main_menu()
+pygame.mixer.music.stop()
