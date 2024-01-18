@@ -1,8 +1,7 @@
 import pygame
 import sys
 from pygame import image, transform
-from LesSuit import main_LesSuit
-from Senfuir import main_Senfuir
+from BonneFin import main_BonneFin
 
 # Initialisation de Pygame
 pygame.init()
@@ -20,7 +19,7 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 
 #icon = pygame.image.load("fonds\\Tete-Trident.ico").convert_alpha()
 
-background_image = pygame.image.load("fonds\\devanttemple.jpeg")
+background_image = pygame.image.load("fonds\\foret.jpeg")
 background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
 
 # Chargez les images
@@ -35,8 +34,8 @@ herooff = pygame.transform.scale(herooff, (200, 400))
 chien = pygame.transform.scale(chien, (200, 400))
 
 # Chargez les images
-left_images = [image.load("personages\\mechantoff.png"), image.load("personages\\hero.png"), image.load("personages\\herooff.png"), image.load("personages\\herooff.png")]
-right_images = [image.load("personages\\alliéoff.png"), image.load("personages\\alliéoff.png"), image.load("personages\\sbireoff.png"), image.load("personages\\transparent.png")]
+left_images = [image.load("personages\\herooff.png"), image.load("personages\\herooff.png"), image.load("personages\\herooff.png"), image.load("personages\\herooff.png")]
+right_images = [image.load("personages\\transparent.png"), image.load("personages\\mechant.png"), image.load("personages\\sbire.png"), image.load("personages\\transparent.png")]
 
 for i in range(len(left_images)):
     left_images[i] = pygame.transform.scale(left_images[i], (200, 400))
@@ -45,6 +44,9 @@ for i in range(len(left_images)):
 #Définition des Son
 son_BruitEcho = pygame.mixer.Sound("Son\\Environnement\\BruitEcho.mp3")
 son_BruitEcho.set_volume(0.3)
+
+son_BruitForet = pygame.mixer.Sound("Son\\Environnement\\BruitForet.mp3")
+son_BruitForet.set_volume(0.3)
 
 i = 0
 
@@ -99,14 +101,8 @@ class TextBox:
 text_box = TextBox(0, 400, screen_width, 200)
 
 def open_new_window_choix1():
-    main_LesSuit()
+    main_BonneFin()
     print("Ouverture d'une nouvelle fenêtre")
-
-
-def open_new_window_choix2():
-    main_Senfuir()
-    print("Ouverture d'une nouvelle fenêtre")
-
 
 current_left_image_index = 0
 current_right_image_index = 0
@@ -123,7 +119,7 @@ def change_images_right():
     current_right_image_index = (current_right_image_index + 1) % len(right_images)
     return right_image
 
-def draw_AllierEnbarquer(choix1, choix2, text_box, next_button):
+def draw_SeCacheDesMechants2(choix1, text_box, next_button):
     global i
     screen.blit(background_image, (0, 0))
 
@@ -140,26 +136,25 @@ def draw_AllierEnbarquer(choix1, choix2, text_box, next_button):
 
     if i == 2:
         choix1.draw()
-        choix2.draw()
 
     pygame.display.flip()
 
 
-def main_AllierEnbarquer():
+def main_SeCacheDesMechants2():
+    son_BruitForet.play()
     global i
     pygame.mixer.music.load("Son\\Environnement\\Embiance.mp3")
     pygame.mixer.music.play(-1)
     pygame.mixer.music.set_volume(0.1)
     #show_buttons = False
-    pygame.display.set_caption("AllierEnbarquer")
+    pygame.display.set_caption("SeCacheDesMechants2")
     # pygame.display.set_icon(icon)
 
-    choix1 = Button(screen_width // 3, 220, screen_width // 3, 50, "Suivre les mercenaires", open_new_window_choix1)
-    choix2 = Button(screen_width // 3, 300, screen_width // 3, 50, "S'enfuir", open_new_window_choix2)
+    choix1 = Button(screen_width // 3, 220, screen_width // 3, 50, "Partir d'ici", open_new_window_choix1)
 
     # Créer une instance de TextBox et définir le texte
     text_box = TextBox(0, 400, screen_width, 200)
-    text_box.set_text(" \nAlors que le chef des mercenaires prendra le trident,\nses sbires embarquerons le traître pour l’attacher à un arbre plus loin.")
+    text_box.set_text(" \n - Vous vous cachez derrière une pierre, regardant les hommes passer")
 
     next_button = Button(700, 550, 100, 50, "Suite>>", text_box.clear_text)
 
@@ -169,7 +164,7 @@ def main_AllierEnbarquer():
     text_box.draw()
 
     # Dessiner les boutons et le bouton "Suite >>"
-    draw_AllierEnbarquer(choix1, choix2, text_box, next_button)
+    draw_SeCacheDesMechants2(choix1, text_box, next_button)
 
     while running:
         for event in pygame.event.get():
@@ -183,30 +178,29 @@ def main_AllierEnbarquer():
                     # Action pour le bouton "choix1"
                     if choix1.action:
                         choix1.action()
-                elif choix2.rect.collidepoint(event.pos):
-                    # Action pour le bouton "choix2"
-                    if choix2.action:
-                        choix2.action()
-                    running = False
+                
                 elif next_button.rect.collidepoint(event.pos):
                     # Action pour le bouton "Suite >>"
                     if next_button.action:
                         next_button.action()
                         if i == 0:
-                            text_box.set_new_text("\n“Un mal pour un bien comme on dit, ça aurait pu être moi à sa place.”")
-                            draw_AllierEnbarquer(choix1, choix2, text_box, next_button)
+                            son_BruitForet.play()
+                            text_box.set_new_text("\n“Fouillez le temple !”\n \n“Détruisez-le si il le faut et éliminez la vermine qui tentera de s’opposer à nous !”\n \n“MAGNEZ-VOUS surtout !”")
+                            draw_SeCacheDesMechants2(choix1, text_box, next_button)
                         elif i == 1:
-                            text_box.set_new_text("\n- Ils partent ensuite vers en direction de leur bateau,\npour regrouper leur matériel.")
-                            draw_AllierEnbarquer(choix1, choix2, text_box, next_button)
+                            son_BruitForet.play()
+                            text_box.set_new_text("\n“A VOS ORDRES CHEF !”")
+                            draw_SeCacheDesMechants2(choix1, text_box, next_button)
                         elif i == 2:
-                            text_box.set_new_text("\n- Que comptez-vous faire désormais ?")
-                            draw_AllierEnbarquer(choix1, choix2, text_box, next_button)
+                            son_BruitForet.play()
+                            text_box.set_new_text("\n- Les hommes vont passer, vous laissant la voie libre pour partir.")
+                            draw_SeCacheDesMechants2(choix1, text_box, next_button)
 
                         i += 1
 
             pygame.display.flip()
 
 if __name__ == "__main__":
-    main_AllierEnbarquer()
+    main_SeCacheDesMechants2()
 
 pygame.mixer.music.stop()
