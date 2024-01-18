@@ -51,6 +51,7 @@ son_pas_Chien.set_volume(0.8)
 son_Aboye = pygame.mixer.Sound("Son\\Chien\\aboiement de chien.mp3")
 son_Aboye.set_volume(0.4)
 
+
 i = 0
 
 # Police de texte
@@ -153,9 +154,6 @@ def draw_Nauffrage(choix1, choix2, text_box, next_button):
 def main_Nauffrage():
     global i
     son_vague.play()
-    pygame.mixer.music.load("Son\\Environnement\\Embiance.mp3")
-    pygame.mixer.music.play(-1)
-    pygame.mixer.music.set_volume(0.1)
     #show_buttons = False
     pygame.display.set_caption("Nauffrage")
     # pygame.display.set_icon(icon)
@@ -189,11 +187,13 @@ def main_Nauffrage():
                     # Action pour le bouton "choix1"
                     if choix1.action:
                         son_Aboye.stop()
+                        i = 0
                         choix1.action()
                 elif choix2.rect.collidepoint(event.pos):
                     # Action pour le bouton "choix2"
                     if choix2.action:
                         son_Aboye.stop()
+                        i = 0
                         choix2.action()
                     running = False
                 elif next_button.rect.collidepoint(event.pos):
@@ -202,7 +202,7 @@ def main_Nauffrage():
                         next_button.action()
                         if i == 0:
                             son_vague.stop()
-                            text_box.set_new_text("\n  Un Chien va arriver vers XX, il ne semblait montrer aucune hostilité.")
+                            text_box.set_new_text("\n  Un Chien va arriver vers Maïko, il ne semblait montrer aucune hostilité.")
                             son_pas_Chien.play()
                             draw_Nauffrage(choix1, choix2, text_box, next_button)
                         elif i == 1:

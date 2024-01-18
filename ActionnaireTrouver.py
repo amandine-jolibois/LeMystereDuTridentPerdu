@@ -15,6 +15,9 @@ screen_width = 800
 screen_height = 600
 screen = pygame.display.set_mode((screen_width, screen_height))
 
+background_image = pygame.image.load("fonds\\plage.jpeg")
+background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
+
 # Police de texte
 font = pygame.font.Font(None, 36)
 
@@ -50,7 +53,7 @@ class TextBox:
         for i in range(len(self.text)):
             self.displayed_text += self.text[i]
             self.rendered_text = self.font.render(self.displayed_text, True, WHITE)
-            screen.fill(BLACK)  # Remplissage avec la couleur noire transparente
+
             pygame.draw.rect(screen, RED, self.rect)
             screen.blit(self.rendered_text, self.rect.topleft)
             pygame.display.flip()

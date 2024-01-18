@@ -20,6 +20,9 @@ background_image = pygame.transform.scale(background_image, (800, 600))
 # Police de texte
 font = pygame.font.Font(None, 36)
 
+son_Declanchement = pygame.mixer.Sound("Son\\effet sonore\\mecanisme enclancher.mp3")
+son_Declanchement.set_volume(0.5)
+
 
 class Button:
     def __init__(self, image_path, position, size, action):
@@ -77,12 +80,16 @@ def main_menu():
                 if start_button.rect.collidepoint(event.pos):
                     # Action pour le bouton "Start"
                     if start_button.action:
+                        son_Declanchement.play()
                         start_button.action()
+                        son_Declanchement.stop()
                 elif quit_button.rect.collidepoint(event.pos):
                     # Action pour le bouton "Quit"
                     if quit_button.action:
+                        son_Declanchement.play()
                         quit_button.action()
                         pygame.mixer.music.stop()
+                        son_Declanchement.stop()
                     running = False
 
         draw_menu(start_button, quit_button)

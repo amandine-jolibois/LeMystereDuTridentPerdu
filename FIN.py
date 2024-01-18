@@ -1,22 +1,36 @@
 import pygame
 import sys
-import time
+from pygame import image, transform
+
 
 # Initialisation de Pygame
 pygame.init()
+pygame.mixer.init()
 
 # Définition des couleurs
-BLACK = (0, 0, 0)
+BLACK = (0, 0, 0, 128)  # 128 pour de la transparence
 WHITE = (255, 255, 255)
-RED = (255, 0, 0, 128) # 128 pour de la transparence
+MER = (2 , 125 , 173)
 
 # Configuration de la fenêtre
 screen_width = 800
 screen_height = 600
 screen = pygame.display.set_mode((screen_width, screen_height))
 
+#icon = pygame.image.load("fonds\\Tete-Trident.ico").convert_alpha()
+
+background_image = pygame.image.load("fonds\\Game-over.png")
+background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
+
+
+son_GameOver = pygame.mixer.Sound("Son\\Song Part2\\game-over.mp3")
+son_GameOver.set_volume(0.5)
+
+i = 0
+
 # Police de texte
-font = pygame.font.Font(None, 36)
+font = pygame.font.Font(None, 30)
+
 
 class Button:
     def __init__(self, x, y, width, height, text, action=None):
@@ -30,85 +44,56 @@ class Button:
         text_rect = text_surface.get_rect(center=self.rect.center)
         screen.blit(text_surface, text_rect)
 
-def open_new_window():
+def open_new_window_choix1():
+    from Menu import main_menu
+    main_menu()
     print("Ouverture d'une nouvelle fenêtre")
 
-class TextBox:
-    def __init__(self, x, y, width, height):
-        self.rect = pygame.Rect(x, y, width, height)
-        self.text = ""
-        self.font = pygame.font.Font(None, 28)
-        self.rendered_text = None
-        self.displayed_text = ""
+def draw_Nauffrage(next_button):
+    global i
+    screen.blit(background_image, (0, 0))
 
-    def set_text(self, text):
-        self.text = text
-        self.rendered_text = self.font.render(self.text, True, WHITE)
-
-    def display_text(self, delay=0.05):
-        self.displayed_text = ""
-        for i in range(len(self.text)):
-            self.displayed_text += self.text[i]
-            self.rendered_text = self.font.render(self.displayed_text, True, WHITE)
-            screen.fill(BLACK)  # Remplissage avec la couleur noire transparente
-            pygame.draw.rect(screen, RED, self.rect)
-            screen.blit(self.rendered_text, self.rect.topleft)
-            pygame.display.flip()
-            time.sleep(delay)
-
-    def draw(self):
-        pygame.draw.rect(screen, RED, self.rect)
-        if self.rendered_text:
-            screen.blit(self.rendered_text, self.rect.topleft)
-
-def draw_FIN(choix1, choix2, text_box, display_buttons):
-    screen.fill(BLACK)
-
-    # Dessiner la boîte de texte
-    text_box.draw()
-
-    if display_buttons:
-        # Dessiner les boutons
-        choix1.draw()
-        choix2.draw()
+    # Dessiner les boutons
+    next_button.draw()
 
     pygame.display.flip()
 
+
 def main_FIN():
-    pygame.display.set_caption("GAME OVER")
-    choix1 = Button(screen_width // 4, 220, screen_width // 2, 50, "Choix1 - Suite", open_new_window)
-    choix2 = Button(screen_width // 4, 300, screen_width // 2, 50, "Choix2 - Quit", sys.exit)
-    text_box = TextBox(0, 400, screen_width, 200)
-    display_buttons = False
+    global i
+    son_GameOver.play(-1)
+    pygame.mixer.music.set_volume(0.5)
+    pygame.display.set_caption("Game Over")
+    # pygame.display.set_icon(icon)
 
-    # Délai avant écriture de 0,6 secondes
-    pygame.time.delay(600)
-
-    # Affichage du texte
-    text_box.set_text("Le texte défile au fur et à mesure.")
-    text_box.display_text()
-    display_buttons = True
+    next_button = Button(700, 550, 100, 50, "Menu", open_new_window_choix1)
 
     running = True
+
+
+    # Dessiner les boutons et le bouton "Suite >>"
+    draw_Nauffrage(next_button)
 
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+                pygame.mixer.music.stop()
                 pygame.quit()
                 sys.exit()
+                running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if choix1.rect.collidepoint(event.pos):
-                    # Action pour le bouton "choix1"
-                    if choix1.action:
-                        choix1.action()
-                elif choix2.rect.collidepoint(event.pos):
-                    # Action pour le bouton "choix2"
-                    if choix2.action:
-                        display_buttons = True
-                    running = False
+                if next_button.rect.collidepoint(event.pos):
+                    # Action pour le bouton "Suite >>"
+                    if next_button.action:
+                        son_GameOver.stop()
+                        next_button.action()
+                        i = 0
+                        open_new_window_choix1()
 
-        draw_FIN(choix1, choix2, text_box, display_buttons)
+            pygame.display.flip()
 
 if __name__ == "__main__":
     main_FIN()
+
+son_GameOver.stop()
